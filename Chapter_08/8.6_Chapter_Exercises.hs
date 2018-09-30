@@ -103,9 +103,6 @@ testing x y = print ("Div result: " ++ show (div x y) ++ "    DividedBy result: 
 mc n 
     | n > 100 = n - 10
     | otherwise = mc (mc (n+11))
- 
-
-
 
 -- Numbers into words
 digitToWord :: Int -> String
