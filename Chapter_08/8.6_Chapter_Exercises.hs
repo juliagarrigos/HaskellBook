@@ -1,12 +1,66 @@
 import Data.List (intersperse)
--- (TODO posar el que vaig fer a casa) 8.6 Chapter Exercises --
 
---TODOOO
+-- Reviewing currying
 
+cattyConny :: String -> String -> String
+cattyConny x y = x ++ " mrow " ++ y
+
+flippy :: String -> String -> String
+flippy = flip cattyConny
+
+appedCatty :: String -> String
+appedCatty = cattyConny "woops"
+
+frappe :: String -> String
+frappe = flippy "haha"
+
+--3
+-- frappe (appedCatty "2")
+-- frappe (cattyConny "woops" "2")
+-- frape ( "woops mrow 2")
+-- flippy "haha" "woops mrow 2"
+-- flip cattyConny "haha" "woops mrow 2"
+-- cattyConny "woops mrow 2" "haha" 
+-- "woops mrow 2 mrow haha" 
+
+-- -- 5
+-- cattyConny (frappe "pink")(cattyConny "green" (appedCatty "blue"))
+-- cattyConny (frappe "pink")(cattyConny "green" (cattyConny "woops" "blue"))
+-- cattyConny (frappe "pink")(cattyConny "green" "woops mrow blue")
+-- cattyConny (frappe "pink") "green mrow woops mrow blue"
+-- cattyConny (flippy "haha" "pink") "green mrow woops mrow blue"
+-- cattyConny (flip cattyConny "haha" "pink") "green mrow woops mrow blue"
+-- cattyConny (cattyConny "pink" "haha") "green mrow woops mrow blue"
+-- cattyConny "pink mrow haha" "green mrow woops mrow blue"
+-- "pink mrow haha mrow green mrow woops mrow blue"
+
+-- --6
+-- cattyConny (flippy "Pugs" "are") "awesome"
+-- cattyConny (flip cattyConny "Pugs" "are") "awesome"
+-- cattyConny (cattyConny "are" "Pugs") "awesome"
+-- "are mrow Pugs mrow awesome"
 
 -- Recursion
 
 --1.
+
+-- dividedBy 15 2
+-- go 15 2 0
+-- go (15-2) 2 (0+1)
+-- go 13 2 1
+-- go (13-2) 2 (1+1)
+-- go 11 2 2
+-- go (11-2) 2 (2+1)
+-- go 9 2 3
+-- go (9-2) 2 (3+1)
+-- go 7 2 4
+-- go (7-2) 2 (4+1)
+-- go 5 2 5
+-- go (5-2) 2 (5+1)
+-- go 3 2 6 
+-- go (3-2) 2 6+1
+-- go 1 2 7
+-- (7,1)
 
 --2.
 -- mySum 5 = 1 + 2 + 3 + 4 + 5 = 15
