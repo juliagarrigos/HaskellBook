@@ -1,5 +1,7 @@
 -- 9.4 List’s syntactic sugar --
 
-myList = (1:2:3: []) ++ 4 : []
+-- No syntactic sugar
+myList = (1 : 2 : 3 : []) ++ 4 : []
 
-myListEasy = [1,2,3] ++ [4]
+-- Syntactic sugar
+myListSs = [1,2,3] ++ [4]

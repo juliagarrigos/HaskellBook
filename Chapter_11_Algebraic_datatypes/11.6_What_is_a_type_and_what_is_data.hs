@@ -36,7 +36,6 @@ getManu (Car manu _) = manu
 --4. Non-exhaustive patterns in function getManu
 
 --5.
-
 type Size = Integer
 
 data Vehicle' = Car' Manufacturer Price | Plane' Airline Size deriving (Eq, Show)
