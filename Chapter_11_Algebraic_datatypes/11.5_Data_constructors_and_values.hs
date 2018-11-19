@@ -20,8 +20,5 @@ myOtherOtherHusky = HuskyData
 myDoge :: DogueDeBordeaux Int
 myDoge = DogueDeBordeaux 10
 
-badDoge :: DogueDeBordeaux String
-badDoge = DogueDeBordeaux "bad"
-
 data Doggies a = Husky a | Mastiff a deriving (Eq, Show)
 
