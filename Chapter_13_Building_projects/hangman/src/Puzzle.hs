@@ -5,6 +5,9 @@ import System.Exit (exitSuccess)
 import Data.Maybe (isJust) 
 import Control.Monad (forever) 
 
+maxIncorrectAttempts :: Int
+maxIncorrectAttempts = 7
+
 data Puzzle = Puzzle String [Maybe Char] [Char] 
 instance Show Puzzle where
     show (Puzzle _ discovered guessed) = (intersperse ' ' $ fmap renderPuzzleChar discovered) ++ " Guessed so far: " ++ guessed
@@ -51,12 +54,15 @@ handleGuess puzzle guess = do
             return (fillInCharacter puzzle guess)
 
 gameOver :: Puzzle -> IO ()
-gameOver (Puzzle wordToGuess _ guessed) =
-    if (length guessed) > 7 then
+gameOver puzzle@(Puzzle wordToGuess _ guessed) =
+    if (guessedIncorrect puzzle) > maxIncorrectAttempts then
         do  putStrLn "You lose!"
             putStrLn $ "The word was: " ++ wordToGuess
             exitSuccess
     else return ()
+
+guessedIncorrect :: Puzzle -> Int
+guessedIncorrect (Puzzle word _ guessed) = length $ filter (\x -> not $ elem x word) guessed
 
 gameWin :: Puzzle -> IO ()
 gameWin (Puzzle _ filledInSoFar _) =
