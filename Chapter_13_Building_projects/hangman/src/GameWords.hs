@@ -1,6 +1,5 @@
 module GameWords where
 
-import Data.Char (toLower) 
 import System.Random (randomRIO) 
 
 minWordLength :: Int
