@@ -8,7 +8,7 @@ import Control.Monad (forever)
 maxIncorrectAttempts :: Int
 maxIncorrectAttempts = 7
 
-data Puzzle = Puzzle String [Maybe Char] [Char] 
+data Puzzle = Puzzle String [Maybe Char] [Char] deriving (Eq)
 instance Show Puzzle where
     show (Puzzle _ discovered guessed) = (intersperse ' ' $ fmap renderPuzzleChar discovered) ++ " Guessed so far: " ++ guessed
 
