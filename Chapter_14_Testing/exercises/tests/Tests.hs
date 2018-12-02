@@ -4,6 +4,7 @@ import Test.Hspec
 import Test.QuickCheck
 import WordNumber(digitToWord, digits, wordNumber, capitalizeWord)
 import Data.List (sort)
+import Ciphers
 
 -- 14.7 Chapter Exercises --
 
@@ -308,8 +309,42 @@ data Fool = Fulse | Frue deriving (Eq, Show)
 foolGen :: Gen Fool
 foolGen = oneof [return $ Fulse, return $ Frue]
 
+-- 2. 2/3s change of Fulse, 1/3 change of Frue
+
 foolGen' :: Gen Fool
 foolGen' = frequency [(2, return $ Fulse), (1,return $ Frue)]
 
+-- Hangman testing --> tests added in hangman project
+
+-- Validating ciphers
+
+shiftGen :: Gen Int
+shiftGen = elements[1..20]
+
+wordGen :: Gen String
+wordGen = listOf (elements ['a'..'z'])
+
+caesarGen :: Gen (Int, String)
+caesarGen = do
+    shift <- shiftGen 
+    word <- wordGen
+    return (shift, word)
+
+caesarCipherProperty :: Property
+caesarCipherProperty = forAll caesarGen (\(shift, word) -> uncaesarRight (caesarRight word shift) shift == word)
+
+vigenreGen :: Gen (String, String)
+vigenreGen = do
+    key <- wordGen 
+    word <- wordGen
+    return (key, word)
+
+vigenreCipherProperty :: Property
+vigenreCipherProperty = forAll vigenreGen (\(key, word) -> unvigenere (vigenere word key) key == word)
+
+ciphersTest :: IO()
+ciphersTest = do
+    quickCheck caesarCipherProperty
+    quickCheck vigenreCipherProperty
 
 
