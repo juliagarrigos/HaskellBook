@@ -1,6 +1,7 @@
 module WordNumber where
 
 import           Data.List                      ( intersperse )
+import           Data.Char                      ( toUpper )
 
 digitToWord :: Int -> String
 digitToWord n = case n of
@@ -25,3 +26,7 @@ digits n = go n []
 
 wordNumber :: Int -> String
 wordNumber = concat . intersperse "-" . map digitToWord . digits
+
+capitalizeWord :: String -> String
+capitalizeWord [] = []
+capitalizeWord (x:xs) = toUpper x : xs

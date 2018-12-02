@@ -2,7 +2,7 @@ module Tests where
 
 import Test.Hspec
 import Test.QuickCheck
-import WordNumber(digitToWord, digits, wordNumber)
+import WordNumber(digitToWord, digits, wordNumber, capitalizeWord)
 import Data.List (sort)
 
 -- 14.7 Chapter Exercises --
@@ -12,20 +12,14 @@ import Data.List (sort)
 wordNumberTests :: IO ()
 wordNumberTests = hspec $ do
     describe "digitToWord" $ do
-        it "returns zero for 0" $ do
-            digitToWord 0 `shouldBe` "zero"
-        it "returns one for 1" $ do
-            digitToWord 1 `shouldBe` "one"
+        it "returns zero for 0" $ digitToWord 0 `shouldBe` "zero"
+        it "returns one for 1" $ digitToWord 1 `shouldBe` "one"
     describe "digits" $ do
-        it "returns [1] for 1" $ do
-            digits 1 `shouldBe` [1]
-        it "returns [1, 0, 0] for 100" $ do
-            digits 100 `shouldBe` [1, 0, 0]
+        it "returns [1] for 1" $ digits 1 `shouldBe` [1]
+        it "returns [1, 0, 0] for 100" $ digits 100 `shouldBe` [1, 0, 0]
     describe "wordNumber" $ do
-        it "one-zero-zero given 100" $ do
-            wordNumber 100 `shouldBe` "one-zero-zero"
-        it "nine-zero-zero-one for 9001" $ do
-            wordNumber 9001 `shouldBe` "nine-zero-zero-one"
+        it "one-zero-zero given 100" $ wordNumber 100 `shouldBe` "one-zero-zero"
+        it "nine-zero-zero-one for 9001" $ wordNumber 9001 `shouldBe` "nine-zero-zero-one"
 
 -- Using QuickCheck
 
@@ -33,6 +27,7 @@ wordNumberTests = hspec $ do
 half :: Fractional a => a -> a
 half x = x / 2
 
+halfIdentity :: Double -> Double
 halfIdentity = (* 2) . half
 
 genNumerator :: Gen Double
@@ -92,8 +87,7 @@ prop_plusAssoc
 prop_plusAssoc gen = forAll gen (\(x, y, z) -> plusAssociative x y z)
 
 plusAssocTest :: IO ()
-plusAssocTest = do
-    quickCheck (prop_plusAssoc (genThree :: Gen (Integer, Integer, Integer)))
+plusAssocTest = quickCheck (prop_plusAssoc (genThree :: Gen (Integer, Integer, Integer)))
 
 plusCommutative :: (Num a, Eq a) => a -> a -> Bool
 plusCommutative x y = x + y == y + x
@@ -260,3 +254,62 @@ showReadTest :: IO()
 showReadTest = do
     quickCheck (prop_showRead (arbitrary :: Gen Bool))
     quickCheck (prop_showRead (arbitrary :: Gen Int))
+
+-- Failure
+-- square x = x * x
+-- squareIdentity = square . sqrt
+
+positiveFloatGen :: Gen Float
+positiveFloatGen = (arbitrary :: Gen Float) `suchThat` (>0)
+
+square :: Num a => a -> a
+square x = x * x
+
+prop_squareSqrt :: Property
+prop_squareSqrt = forAll positiveFloatGen (\x -> (square . sqrt) x == x)
+
+squareSqrtTest :: IO()
+squareSqrtTest = do
+    quickCheck prop_squareSqrt 
+    quickCheck prop_squareSqrt 
+
+-- Idempotence
+
+twice :: (b -> b) -> b -> b
+twice f = f . f
+
+fourTimes :: (b -> b) -> b -> b
+fourTimes = twice . twice
+
+--1. 
+prop_idempotenceCapitalizeWord :: Property
+prop_idempotenceCapitalizeWord = forAll (arbitrary :: Gen String) 
+    (\x -> capitalizeWord x == twice capitalizeWord x && capitalizeWord x == fourTimes capitalizeWord x)
+
+idempotenceCapitalizeWordTest :: IO()
+idempotenceCapitalizeWordTest = quickCheck prop_idempotenceCapitalizeWord
+
+--2. 
+prop_idempotenceSort :: (Show a, Eq a, Ord a) => Gen [a] -> Property
+prop_idempotenceSort gen = forAll gen (\x -> sort x == twice sort x && sort x == fourTimes sort x)
+
+idempotenceSortTest :: IO()
+idempotenceSortTest = do
+    quickCheck (prop_idempotenceSort(genList :: Gen [String]))
+    quickCheck (prop_idempotenceSort(genList :: Gen [Char]))
+    quickCheck (prop_idempotenceSort(genList :: Gen [Float]))
+
+-- Make a Gen random generator for the datatype
+
+-- 1. Equal probabilities for each
+
+data Fool = Fulse | Frue deriving (Eq, Show)
+
+foolGen :: Gen Fool
+foolGen = oneof [return $ Fulse, return $ Frue]
+
+foolGen' :: Gen Fool
+foolGen' = frequency [(2, return $ Fulse), (1,return $ Frue)]
+
+
+
