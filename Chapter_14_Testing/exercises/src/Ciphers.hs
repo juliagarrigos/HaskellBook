@@ -19,8 +19,6 @@ uncaesarRight :: String -> Int -> String
 uncaesarRight [] _ = []
 uncaesarRight (x:xs) s = unshiftChar x s : uncaesarRight xs s
 
-testingCaesar = uncaesarRight (caesarRight "helloworld" 7) 7 == "helloworld"
-
 -- Vigenère cipher
 
 alphabetIndex :: Char -> Int
@@ -37,13 +35,3 @@ vigenere message key = map encode $ zipWith (,) message (concat $ repeat key)
 
 unvigenere :: String -> String -> String
 unvigenere message key = map decode $ zipWith (,) message (concat $ repeat key)
-
-testingVigenere :: IO ()
-testingVigenere = if encodingResult == "ecmvcfkowqmeo" && decodingResult == message 
-    then putStrLn "It worked!"
-    else putStrLn ("It didn't worked, result: " ++ encodingResult ++ " " ++ decodingResult)
-    where 
-        message = "secretmessage"
-        key = "mykey"
-        encodingResult = vigenere message key
-        decodingResult = unvigenere encodingResult key
