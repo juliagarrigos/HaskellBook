@@ -53,4 +53,4 @@ testPostorder = if postorder testTree == [1, 3, 2]
 -- Write foldr for BinaryTree
 foldTree :: (a -> b -> b) -> b -> BinaryTree a -> b
 foldTree _ b Leaf = b
-foldTree f b (Node left a right) = foldTree f (foldTree f (f a b) right) left 
+foldTree f b (Node left a right) = foldTree f (foldTree f (f a b) left) right 
